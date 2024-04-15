@@ -18,17 +18,21 @@ export const cartSlice = createSlice({
       }
     ) => {
       state.cartItems.push(action.payload);
-      //   state.cartTotals += action.payload.price;
+      state.cartTotals += action.payload.price;
     },
-    RemoveProduct: (
+    RemoveProductFromCart: (
       state,
       action: {
         type: string;
         payload: ProductInterface;
       }
     ) => {
-      state.cartItems.push(action.payload);
+      state.cartItems = state.cartItems.filter(
+        (item) => item._id !== action.payload.category._id
+      );
       //   state.cartTotals += action.payload.price;
     },
   },
 });
+
+export const { AddProductToCart, RemoveProductFromCart } = cartSlice.actions;
