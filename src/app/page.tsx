@@ -1,10 +1,10 @@
 "use client";
-import { Modal, Rate, Button, message } from "antd";
+import { Modal, Rate, Button, message, Alert } from "antd";
 import { useState, useEffect } from "react";
-import Header from "@/component/header";
-import { UseDispatch, useDispatch } from "react-redux";
-import { AddProductToCart } from "@/redux/cartSlice";
-// import {message} from "antd";
+import Link from "next/link";
+import { useDispatch, useSelector } from "react-redux";
+import { AddToCart, cartState } from "@/redux/cartSlice";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: number;
@@ -29,17 +29,19 @@ async function getData(): Promise<Product[]> {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [cart, setCart] = useState<Product[]>([]);
-  // const dispatch = useDispatch();
+
+  const dispatch = useDispatch();
+  const { cartItems }: cartState = useSelector((state: any) => state.cart);
+
   useEffect(() => {
     async function fetchData() {
       try {
         const data = await getData();
         setProducts(data);
-        setFilteredProducts(data);
+
+        console.log(products);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -47,93 +49,54 @@ export default function Home() {
 
     fetchData();
   }, []);
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product);
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null);
-  };
-
-  const handleAddToCart = (product: Product) => {
-    setCart([...cart, product]);
-    message.success("Product added to cart");
-    console.log("cart product", product);
+  // dispatch(AddProducts(products));
+  const handleProduct = (product: Product) => {
+    console.log(product);
+    router.push("/productinfo/${product.id}");
   };
 
   return (
     <>
-      <Header
-        userData={{ name: "John Doe", email: "johndoe@example.com" }}
-        openModal={() => {}}
-        closeModal={() => {}}
-        isModalOpen={false}
-        products={products}
-        cartProducts={cart} // Pass cart products to Header
-        setFilteredProducts={setFilteredProducts}
-        // addToCart={handleAddToCart}
-      />
       <div className="container mx-auto py-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredProducts.map((product) => (
+          {products.map((product) => (
             <div key={product.id} className="bg-white p-4 rounded-md shadow-md">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-48 object-cover mb-4 cursor-pointer"
-                onClick={() => handleProductClick(product)}
-              />
-              <h2 className="text-lg font-semibold mb-2">{product.title}</h2>
-              <p className="text-blue-600 font-semibold mt-2">
-                ${product.price}
-              </p>
-              <Rate value={(product.rating.rate / 5) * 5} disabled />
-              <span> {product.rating.count} reviews</span>
+              <Link href={`/productinfo/${product.id}`}>
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  width={100}
+                  height={100}
+                  className="w-full h-48 object-cover mb-4 cursor-pointer"
+                  onClick={() => handleProduct(product)}
+                />
+                <h2 className="text-lg font-semibold mb-2">{product.title}</h2>
+                <p className="text-blue-600 font-semibold mt-2">
+                  ${product.price}
+                </p>
+                <Rate value={(product.rating.rate / 5) * 5} disabled />
+                <span> {product.rating.count} reviews</span>
+              </Link>
               <button
                 className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 hover:bg-blue-600"
-                onClick={() => handleAddToCart(product)}
+                onClick={() => {
+                  dispatch(
+                    AddToCart({
+                      ...product,
+                      quantity: 1,
+                    })
+                  );
+                  message.success("added to cart");
+                }}
+                disabled={cartItems.some(
+                  (item: Product) => item.id === product.id
+                )}
               >
                 Add to Cart
               </button>
             </div>
           ))}
         </div>
-
-        <Modal
-          title={selectedProduct?.title}
-          visible={!!selectedProduct}
-          onCancel={handleCloseModal}
-          footer={[
-            <Button key="back" onClick={handleCloseModal}>
-              Close
-            </Button>,
-            <Button
-              key="submit"
-              type="primary"
-              onClick={() => handleAddToCart(selectedProduct)}
-            >
-              Add to Cart
-            </Button>,
-          ]}
-        >
-          <div>
-            <img
-              src={selectedProduct?.image}
-              alt={selectedProduct?.title}
-              className="w-full object-cover mb-4"
-            />
-            <p className="text-lg font-semibold mb-2">
-              {selectedProduct?.title}
-            </p>
-            <p className="text-blue-600 font-semibold">
-              ${selectedProduct?.price}
-            </p>
-            <Rate value={(selectedProduct?.rating.rate / 5) * 5} disabled />
-            <span> {selectedProduct?.rating.count} reviews</span>
-            <p>{selectedProduct?.description}</p>
-          </div>
-        </Modal>
       </div>
     </>
   );
