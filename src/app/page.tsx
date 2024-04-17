@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AddToCart, cartState } from "@/redux/cartSlice";
+import { setProducts } from "@/redux/productSlice";
 
 interface Product {
   id: number;
@@ -28,7 +29,7 @@ async function getData(): Promise<Product[]> {
 }
 
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProduct] = useState<Product[]>([]);
 
   const dispatch = useDispatch();
   const { cartItems }: cartState = useSelector((state: any) => state.cart);
@@ -37,16 +38,15 @@ export default function Home() {
     async function fetchData() {
       try {
         const data = await getData();
-        setProducts(data);
-
-        console.log(products);
+        setProduct(data);
+        dispatch(setProducts(data)); // Dispatch the fetched products
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     }
 
     fetchData();
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

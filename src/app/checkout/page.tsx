@@ -9,7 +9,7 @@ const CheckoutPage: React.FC = () => {
 
   const onFinish = (values: any) => {
     console.log("Received values:", values);
-    // Check if all fields are filled
+
     const { name, email, address } = values;
     if (!name || !email || !address) {
       message.error("Please fill in all fields");
@@ -49,8 +49,14 @@ const CheckoutPage: React.FC = () => {
           <Input.TextArea rows={4} />
         </Form.Item>
         <Form.Item>
+          <Link href="/cart">
+            {" "}
+            <Button type="primary" className="mr-2">
+              Back
+            </Button>{" "}
+          </Link>
           <Link href="/payment">
-            <Button type="primary" htmlType="submit" className="w-full">
+            <Button type="primary" htmlType="submit" className="">
               Payment
             </Button>
           </Link>

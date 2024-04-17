@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Link from "next/link";
 import { Form, Input, Button, Radio, message } from "antd";
 
 const PaymentMethod: React.FC = () => {
@@ -86,13 +87,20 @@ const PaymentMethod: React.FC = () => {
         )}
 
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            onClick={() => message.success("order Placed successfully")}
-          >
-            Submit
-          </Button>
+          <Link href="/checkout">
+            <Button type="primary" className="mr-2">
+              Back
+            </Button>{" "}
+          </Link>
+          <Link href="/order">
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={() => message.success("order Placed successfully")}
+            >
+              Submit
+            </Button>
+          </Link>
         </Form.Item>
       </Form>
     </div>

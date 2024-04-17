@@ -17,14 +17,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      {/* <Provider store={store}> */}
       <Providers>
         <body>
           <Header />
           {children}
         </body>
       </Providers>
-      {/* </Provider> */}
     </html>
   );
 }

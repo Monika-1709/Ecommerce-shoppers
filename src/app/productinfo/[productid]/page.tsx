@@ -37,7 +37,7 @@ function Productinfo({ params }: { params: { productid: string } }) {
     async function fetchData() {
       try {
         const data = await getData(params.productid);
-        console.log("Data received:", data); // Log the received data
+        console.log("Data received:", data);
         setProduct(data);
       } catch (error) {
         console.error("Error fetching data:", error);
