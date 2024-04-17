@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AddToCart, cartState } from "@/redux/cartSlice";
-import { useRouter } from "next/navigation";
 
 interface Product {
   id: number;
@@ -29,7 +28,6 @@ async function getData(): Promise<Product[]> {
 }
 
 export default function Home() {
-  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
 
   const dispatch = useDispatch();
@@ -49,11 +47,6 @@ export default function Home() {
 
     fetchData();
   }, []);
-  // dispatch(AddProducts(products));
-  const handleProduct = (product: Product) => {
-    console.log(product);
-    router.push("/productinfo/${product.id}");
-  };
 
   return (
     <>
@@ -68,7 +61,6 @@ export default function Home() {
                   width={100}
                   height={100}
                   className="w-full h-48 object-cover mb-4 cursor-pointer"
-                  onClick={() => handleProduct(product)}
                 />
                 <h2 className="text-lg font-semibold mb-2">{product.title}</h2>
                 <p className="text-blue-600 font-semibold mt-2">
