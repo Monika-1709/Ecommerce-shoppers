@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { AddToCart, cartState } from "@/redux/cartSlice";
 import { setProducts } from "@/redux/productSlice";
+import Image from "next/image";
 
 interface Product {
   id: number;
@@ -58,9 +59,9 @@ export default function Home() {
                 <img
                   src={product.image}
                   alt={product.title}
-                  width={100}
-                  height={100}
-                  className="w-full h-48 object-cover mb-4 cursor-pointer"
+                  // width={100}
+                  // height={100}
+                  className=" h-48 w-48 object-fill mb-4 cursor-pointer "
                 />
                 <h2 className="text-lg font-semibold mb-2">{product.title}</h2>
                 <p className="text-blue-600 font-semibold mt-2">
